@@ -1,0 +1,36 @@
+0.26
+ - Add Rmpz_fprintf, Rmpz_sprintf and Rmpz_sprintf_ret.
+ - Add Rmpz_out_raw and Rmpz_inp_raw.
+0.24
+ - Add TRmpz_out_str and TRmpz_inp_str.
+ - Rmpz_out_str now takes an optional (leading) string argument - a
+   string that will be prepended to the mpz_out_str() output.
+ - Remove the tests in the Makefile.PL that test for the presence of
+   a suitable compiler and GMP library.
+ - Remove the "homegrown" primes and supplementary functions from the 
+   list of exportable functions. (They don't really belong here.) Also
+   remove the documentation pertaining to these functions from the POD.
+   This is done in preparation for the eventual removal of these 
+   functions from Math::GMPz. For the time being, however, these
+   functions are still available via their fully-qualified names - and
+   they're still being tested in the test suite.
+
+0.22 
+ - Rewrite new()
+ - Rmpz_out_str() now takes an optional third argument - a string that
+   will be appended to the mpz_out_str() output. Also stdout is
+   fflush()'d each time Rmpfr_out_str() is called.
+ - The overload functions and new() can now handle a long double value
+   correctly
+
+0.21
+ - Add "Name" section to the pod
+ - Remove 'Makefile.old' from the source. (Doh !!)
+
+0.20
+ - First CPAN release
+ - No longer assign Exporter and DynaLoader to @Math::GMPz::ISA.
+ - Add support for use64bitint
+ - add new() function/method to facilitate initialization/assignment
+
+
