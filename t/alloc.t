@@ -190,6 +190,6 @@ else {print "ok 20\n"}
 eval {Rmpz_printf("The version is %s. Values are %d %#Zo %#Zo\n", $ok, 11, $x10, $y10);};
 #select($ofh);
 
-if($@) {print "not ok 21\n"}
-else {print "ok 21\n"}
+if($@) {print "ok 21\n"}
+else {print "not ok 21\n"}
 

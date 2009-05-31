@@ -154,6 +154,18 @@ if($@ =~ /Too many arguments supplied to new\(\) \- expected only one/) {$ok .= 
 eval{my $f38 = Math::GMPz::new('z', -12);};
 if($@ =~ /Invalid value for base/) {$ok .= 'i'}
 
-if($ok eq 'abcdefghi') {print "ok 4\n"}
+eval{my $f39 = Math::GMPz->new('123.456');};
+if($@ =~ /is not a valid base 0 integer/) {$ok .= 'j'}
+
+eval{my $f40 = Math::GMPz::new('123.456');};
+if($@ =~ /is not a valid base 0 integer/) {$ok .= 'k'}
+
+eval{my $f41 = Math::GMPz->new('123.456', 10);};
+if($@ =~ /is not a valid base 10 integer/) {$ok .= 'l'}
+
+eval{my $f42 = Math::GMPz::new('123.456', 10);};
+if($@ =~ /is not a valid base 10 integer/) {$ok .= 'm'}
+
+if($ok eq 'abcdefghijklm') {print "ok 4\n"}
 else {print "not ok 4 $ok\n"}
 

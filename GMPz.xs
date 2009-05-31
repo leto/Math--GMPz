@@ -1,7 +1,7 @@
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
-#include "INLINE.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <gmp.h>
@@ -29,11 +29,11 @@ SV * Rmpz_init_set_str_nobless(SV * num, SV * base) {
 
      New(1, mpz_t_obj, 1, mpz_t);
      if(mpz_t_obj == NULL) croak("Failed to allocate memory in Rmpz_create function");
+     if(mpz_init_set_str (*mpz_t_obj, SvPV_nolen(num), b))
+        croak("First argument supplied to Rmpz_create_init_nobless() is not a valid base %u integer", b);
+
      obj_ref = newSV(0);
      obj = newSVrv(obj_ref, NULL);
-     if(mpz_init_set_str (*mpz_t_obj, SvPV_nolen(num), b))
-        croak("First argument supplied to Rmpz_create_init_nobless() is not a valid base %u number", b);
-
      sv_setiv(obj, INT2PTR(IV, mpz_t_obj));
      SvREADONLY_on(obj);
      return obj_ref;
@@ -241,11 +241,11 @@ SV * Rmpz_init_set_str(SV * num, SV * base) {
 
      New(1, mpz_t_obj, 1, mpz_t);
      if(mpz_t_obj == NULL) croak("Failed to allocate memory in Rmpz_init_set_str function");
+     if(mpz_init_set_str (*mpz_t_obj, SvPV_nolen(num), b))
+        croak("First argument supplied to Rmpz_init_set_str() is not a valid base %u integer", b);
+
      obj_ref = newSV(0);
      obj = newSVrv(obj_ref, "Math::GMPz");
-     if(mpz_init_set_str (*mpz_t_obj, SvPV_nolen(num), b))
-        croak("First argument supplied to Rmpz_init_set_str() is not a valid base %u number", b);
-
      sv_setiv(obj, INT2PTR(IV, mpz_t_obj));
      SvREADONLY_on(obj);
      return obj_ref;
@@ -337,7 +337,7 @@ void Rmpz_set_d(mpz_t * copy, SV * original) {
 void Rmpz_set_str(mpz_t * copy, SV * original, SV * base) {
     if(SvUV(base) == 1 || SvUV(base) > 62) croak("Second argument supplied to Rmpz_set_str() is not in acceptable range");
     if(mpz_set_str(*copy, SvPV_nolen(original), SvUV(base)))
-       croak("Second argument supplied to Rmpz_set_str() is not a valid base %u number", SvUV(base));
+       croak("Second argument supplied to Rmpz_set_str() is not a valid base %u integer", SvUV(base));
 }
 
 void Rmpz_swap(mpz_t * a, mpz_t * b) {
@@ -357,18 +357,19 @@ SV * Rmpz_get_d(mpz_t * n) {
 }
 
 void Rmpz_get_d_2exp(mpz_t * n) {
-     Inline_Stack_Vars;
+     dXSARGS;
      double d;
      unsigned long exp, *expptr;
 
      expptr = &exp;
      d = mpz_get_d_2exp(expptr, *n);
  
-     Inline_Stack_Reset;
-     Inline_Stack_Push(sv_2mortal(newSVnv(d)));
-     Inline_Stack_Push(sv_2mortal(newSVuv(exp)));
-     Inline_Stack_Done;
-     Inline_Stack_Return(2);
+     // sp = mark; // not needed
+     EXTEND(SP, 2);
+     ST(0) = sv_2mortal(newSVnv(d));
+     ST(1) = sv_2mortal(newSVuv(exp));
+     // PUTBACK; // not needed
+     XSRETURN(2);
 }
 
 SV * Rmpz_getlimbn(mpz_t * p, SV * n) {
@@ -772,12 +773,12 @@ int Rmpz_hamdist(mpz_t * dest, mpz_t * src) {
      return mpz_hamdist(*dest, *src );
 }
 
-int Rmpz_scan0(mpz_t * n, SV * start_bit) {
-    return mpz_scan0(*n, SvUV(start_bit));
+SV * Rmpz_scan0(mpz_t * n, SV * start_bit) {
+    return newSVuv(mpz_scan0(*n, SvUV(start_bit)));
 }
 
-int Rmpz_scan1(mpz_t * n, SV * start_bit) {
-    return mpz_scan1(*n, SvUV(start_bit));
+SV * Rmpz_scan1(mpz_t * n, SV * start_bit) {
+    return newSVuv(mpz_scan1(*n, SvUV(start_bit)));
 }
 
 void Rmpz_setbit(mpz_t * num, SV * bit_index) {
@@ -847,17 +848,17 @@ int Rmpz_even_p(mpz_t * in) {
     return mpz_even_p(*in);
 }
 
-int Rmpz_size(mpz_t * in) {
-    return mpz_size(*in);
+SV * Rmpz_size(mpz_t * in) {
+    return newSVuv(mpz_size(*in));
 }
 
-int Rmpz_sizeinbase(mpz_t * in, SV * base) {
+SV * Rmpz_sizeinbase(mpz_t * in, SV * base) {
     if(SvIV(base) < 2 || SvIV(base) > 62) croak("Rmpz_sizeinbase handles only bases in the range 2..62");
-    return mpz_sizeinbase(*in, (int)SvIV(base));
+    return newSVuv(mpz_sizeinbase(*in, (int)SvIV(base)));
 }
 
 void Rsieve_gmp(int x_arg, int a, mpz_t *number) {
-Inline_Stack_Vars;
+dXSARGS;
 unsigned short *v, *addon, set[16] = {65534,65533,65531,65527,65519,65503,65471,65407,65279,65023,64511,63487,61439,57343,49151,32767};
 unsigned long init, leap, abits, asize, i, size, b, imax, k, x = x_arg;
 
@@ -903,7 +904,7 @@ for(i = 0; i <= imax; ++i) {
 }
 
 size = 0;
-Inline_Stack_Reset;
+sp = mark;
 
 for(i = 0; i < b; ++i) {
     if(v[i / 16] & (1 << (i % 16))) {
@@ -924,15 +925,15 @@ Safefree(v);
 
 for(i = 0; i < abits; ++i) {
     if(addon[i / 16] & (1 << (i % 16))) {
-      Inline_Stack_Push(sv_2mortal(newSViv(2 * i)));
+      XPUSHs(sv_2mortal(newSViv(2 * i)));
       ++size;
       }
    }
 
 Safefree(addon);
 
-Inline_Stack_Done;
-Inline_Stack_Return(size);
+PUTBACK;
+XSRETURN(size);
 
 }
 
@@ -1593,7 +1594,7 @@ SV * Rmpz_inp_str(mpz_t * p, SV * base) {
      if(SvUV(base) == 1 || SvUV(base) > 62)
        croak("2nd argument supplied to Rmpz_inp_str is out of allowable range (must be in range 0, 2..62)");
      ret = mpz_inp_str(*p, NULL, SvUV(base));
-     fflush(stdin);
+     /* fflush(stdin); */
      return newSVuv(ret);
 }
 
@@ -1602,12 +1603,12 @@ SV * TRmpz_inp_str(mpz_t * p, FILE * stream, SV * base) {
      if(SvUV(base) == 1 || SvUV(base) > 62)
        croak("4th argument supplied to TRmpz_inp_str is out of allowable range (must be in range 0, 2..62)");
      ret = mpz_inp_str(*p, stream, (int)SvIV(base));
-     fflush(stream);
+     /* fflush(stream); */
      return newSVuv(ret);
 }
 
 void eratosthenes(SV * x_arg) {
-Inline_Stack_Vars;
+dXSARGS;
 
 unsigned short *v, set[16] = {65534,65533,65531,65527,65519,65503,65471,65407,65279,65023,64511,63487,61439,57343,49151,32767};
 unsigned long leap, i, size, b, imax, k, x = SvUV(x_arg);
@@ -1640,20 +1641,20 @@ for(i = 0; i <= imax; ++i) {
 }
 
 size = 1;
-Inline_Stack_Reset;
-Inline_Stack_Push(sv_2mortal(newSVuv(2)));
+sp = mark;
+XPUSHs(sv_2mortal(newSVuv(2)));
 
 for(i = 0; i < b; ++i) {
     if(v[i / 16] & (1 << (i % 16))) {
-      Inline_Stack_Push(sv_2mortal(newSVuv(2 * i + 1)));
+      XPUSHs(sv_2mortal(newSVuv(2 * i + 1)));
       ++size;
       }
    }
 
 Safefree(v);
 
-Inline_Stack_Done;
-Inline_Stack_Return(size);
+PUTBACK;
+XSRETURN(size);
 
 }
 
@@ -3780,51 +3781,51 @@ SV * _itsa(SV * a) {
 }
 
 void Rmpz_urandomb(SV * p, ...) {
-     Inline_Stack_Vars;
+     dXSARGS;
      unsigned long q, i, thingies;
 
-     thingies = Inline_Stack_Items;
-     q = SvUV(Inline_Stack_Item(thingies - 1)); 
+     thingies = items;
+     q = SvUV(ST(thingies - 1)); 
 
      if((q + 3) != thingies) croak ("Wrong args supplied to mpz_urandomb function");
 
      for(i = 0; i < q; ++i) {
-        mpz_urandomb(*(INT2PTR(mpz_t *, SvIV(SvRV(Inline_Stack_Item(i))))), *(INT2PTR(gmp_randstate_t *, SvIV(SvRV(Inline_Stack_Item(thingies - 3))))), SvUV(Inline_Stack_Item(thingies - 2)));
+        mpz_urandomb(*(INT2PTR(mpz_t *, SvIV(SvRV(ST(i))))), *(INT2PTR(gmp_randstate_t *, SvIV(SvRV(ST(thingies - 3))))), SvUV(ST(thingies - 2)));
         }
 
-     Inline_Stack_Void;
+     XSRETURN(0);
 }
 
 void Rmpz_urandomm(SV * x, ...){
-     Inline_Stack_Vars;
+     dXSARGS;
      unsigned long q, i, thingies;
 
-     thingies = Inline_Stack_Items;
-     q = SvUV(Inline_Stack_Item(thingies - 1)); 
+     thingies = items;
+     q = SvUV(ST(thingies - 1)); 
 
      if((q + 3) != thingies) croak ("Wrong args supplied to mpz_urandomm function"); 
 
      for(i = 0; i < q; ++i) {
-        mpz_urandomm(*(INT2PTR(mpz_t *, SvIV(SvRV(Inline_Stack_Item(i))))), *(INT2PTR(gmp_randstate_t *, SvIV(SvRV(Inline_Stack_Item(thingies - 3))))), *(INT2PTR(mpz_t *, SvIV(SvRV(Inline_Stack_Item(thingies - 2))))));
+        mpz_urandomm(*(INT2PTR(mpz_t *, SvIV(SvRV(ST(i))))), *(INT2PTR(gmp_randstate_t *, SvIV(SvRV(ST(thingies - 3))))), *(INT2PTR(mpz_t *, SvIV(SvRV(ST(thingies - 2))))));
         }
      
-     Inline_Stack_Void;
+     XSRETURN(0);
 }
 
 void Rmpz_rrandomb(SV * x, ...) {
-     Inline_Stack_Vars;
+     dXSARGS;
      unsigned long q, i, thingies;
 
-     thingies = Inline_Stack_Items;
-     q = SvUV(Inline_Stack_Item(thingies - 1)); 
+     thingies = items;
+     q = SvUV(ST(thingies - 1)); 
 
      if((q + 3) != thingies) croak ("Wrong args supplied to mpz_rrandomb function"); 
 
      for(i = 0; i < q; ++i) {
-        mpz_rrandomb(*(INT2PTR(mpz_t *, SvIV(SvRV(Inline_Stack_Item(i))))), *(INT2PTR(gmp_randstate_t *, SvIV(SvRV(Inline_Stack_Item(thingies - 3))))), SvUV(Inline_Stack_Item(thingies - 2)));
+        mpz_rrandomb(*(INT2PTR(mpz_t *, SvIV(SvRV(ST(i))))), *(INT2PTR(gmp_randstate_t *, SvIV(SvRV(ST(thingies - 3))))), SvUV(ST(thingies - 2)));
         }
 
-     Inline_Stack_Void;
+     XSRETURN(0);
 }
 
 SV * rand_init(SV * seed) {
@@ -3886,6 +3887,28 @@ SV * Rmpz_out_raw(FILE * stream, mpz_t * a) {
      size_t ret = mpz_out_raw(stream, *a);
      fflush(stream);
      return newSVuv(ret);
+}
+
+SV * ___GNU_MP_VERSION() {
+     return newSVuv(__GNU_MP_VERSION);
+}
+
+SV * ___GNU_MP_VERSION_MINOR() {
+     return newSVuv(__GNU_MP_VERSION_MINOR);
+}
+
+SV * ___GNU_MP_VERSION_PATCHLEVEL() {
+     return newSVuv(__GNU_MP_VERSION_PATCHLEVEL);
+}
+
+SV * ___GMP_CC() {
+     char * ret = __GMP_CC;
+     return newSVpv(ret, 0);
+}
+
+SV * ___GMP_CFLAGS() {
+     char * ret = __GMP_CFLAGS;
+     return newSVpv(ret, 0);
 }
 
 MODULE = Math::GMPz	PACKAGE = Math::GMPz	
@@ -5441,12 +5464,12 @@ Rmpz_hamdist (dest, src)
 	mpz_t *	dest
 	mpz_t *	src
 
-int
+SV *
 Rmpz_scan0 (n, start_bit)
 	mpz_t *	n
 	SV *	start_bit
 
-int
+SV *
 Rmpz_scan1 (n, start_bit)
 	mpz_t *	n
 	SV *	start_bit
@@ -5552,11 +5575,11 @@ int
 Rmpz_even_p (in)
 	mpz_t *	in
 
-int
+SV *
 Rmpz_size (in)
 	mpz_t *	in
 
-int
+SV *
 Rmpz_sizeinbase (in, base)
 	mpz_t *	in
 	SV *	base
@@ -6275,4 +6298,19 @@ SV *
 Rmpz_out_raw (stream, a)
 	FILE *	stream
 	mpz_t *	a
+
+SV *
+___GNU_MP_VERSION ()
+
+SV *
+___GNU_MP_VERSION_MINOR ()
+
+SV *
+___GNU_MP_VERSION_PATCHLEVEL ()
+
+SV *
+___GMP_CC ()
+
+SV *
+___GMP_CFLAGS ()
 

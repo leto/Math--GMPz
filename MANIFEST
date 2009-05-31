@@ -3,7 +3,6 @@ CHANGES
 Makefile.PL
 GMPz.pm
 GMPz.xs
-INLINE.h
 README
 t/aa_basic.t
 t/alloc.t

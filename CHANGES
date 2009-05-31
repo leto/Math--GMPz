@@ -1,6 +1,21 @@
+0.27
+ - Remove (the need for) INLINE.h
+ - Change Rmpz_sprintf to return the number of characters written.
+ - Change Rmpz_sizeinbase and Rmpz_size to return unsigned longs instead
+   of signed long ints.
+ - Add __GNU_MP_VERSION, __GNU_MP_VERSION_MINOR, __GNU_MP_VERSION_PATCHLEVEL,
+   __GMP_CC and __GMP_CFLAGS
+ - Change Rmpz_scan0 and Rmpz_scan1 to return unsigned long. (Returning a 
+   signed long int was wrong.)
+ - Change Rmpz_printf() so that, like its fprintf and sprintf counterparts,
+   it formats only one variable at a time.
+ - Fix bug in Rmpz_init_set_str (and Rmpz_init_set_str_nobless) that led to
+   a segfault if string was invalid (ie if mpz_init_set_str() returned true).
+
 0.26
  - Add Rmpz_fprintf, Rmpz_sprintf and Rmpz_sprintf_ret.
  - Add Rmpz_out_raw and Rmpz_inp_raw.
+
 0.24
  - Add TRmpz_out_str and TRmpz_inp_str.
  - Rmpz_out_str now takes an optional (leading) string argument - a
