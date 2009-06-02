@@ -26,7 +26,7 @@ if($gmpz1 == $n &&
    $gmpz2 == $n ) {print "ok 2\n"}
 else {print "not ok 2\n"}
 
-if(defined($Config::Config{use64bitint}) &&
+if(Math::GMPz::_has_longlong() &&
    $Config::Config{longsize} == 4) {
    if($gmpz3 != $n) {print "ok 3\n"}
    else {print "not ok 3 A $gmpz3 == $n\n"}

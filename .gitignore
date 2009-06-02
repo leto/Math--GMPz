@@ -1,0 +1,7 @@
+out*
+*.bs
+*.c
+*.o
+Makefile
+blib
+pm_to_blib
