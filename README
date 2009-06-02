@@ -22,7 +22,7 @@ When building this module, the GMP library will need to be accessible.
 If it's not in a location where your compiler finds it by default, 
 then instead of running 'perl Makefile.PL', you'll need to run:
 
-perl Makefile.pl INC="-I/path/to/gmp_include" LIBS="-L/path/to/gmp_lib -lgmp"
+perl Makefile.PL INC="-I/path/to/gmp_include" LIBS="-L/path/to/gmp_lib -lgmp"
 
 ==============
 64-bit support
@@ -56,6 +56,15 @@ default is something I probably ought to know about.
 I am contactable by email at sisyphus at(@) cpan dot (.) org.
 
 ==========
+MAC OS X
+==========
+
+If you have MacPorts installed, you may need to install gmp +universal
+for the bindings to work. After installing you'll need to run:
+
+perl Makefile.PL INC="-I/opt/local/include" LIBS="-L/opt/local/lib -lgmp"
+
+==========
 MS WINDOWS
 ==========
 If building with an MSVC++ compiler against a MinGW-built gmp lib, you'll
@@ -63,5 +72,5 @@ need to additionally link to MinGW's libgcc.a and libcoldname.a. First,
 create copies of the 3 '.a' files (named libgmp.lib, libgcc.lib, and
 libcoldname.lib) and then run:
 
-perl Makefile.pl INC="-IC:/path/to/gmp_include" LIBS="-LC:/path/to/gcc_lib -lgcc -LC:/path/to/coldname_lib -lcoldname -LC:/path/to/gmp_lib -lgmp"
+perl Makefile.Pl INC="-IC:/path/to/gmp_include" LIBS="-LC:/path/to/gcc_lib -lgcc -LC:/path/to/coldname_lib -lcoldname -LC:/path/to/gmp_lib -lgmp"
 
