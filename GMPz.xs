@@ -359,7 +359,7 @@ SV * Rmpz_get_d(mpz_t * n) {
 void Rmpz_get_d_2exp(mpz_t * n) {
      dXSARGS;
      double d;
-     unsigned long exp, *expptr;
+     long exp, *expptr;
 
      expptr = &exp;
      d = mpz_get_d_2exp(expptr, *n);
