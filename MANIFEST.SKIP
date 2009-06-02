@@ -1,0 +1,11 @@
+.git
+Makefile
+blib
+.*\.c
+Math-GMPz-*
+out.*txt
+t/out.*txt
+.*\.bs
+.*\.o
+.*\.core
+.*\.sw.

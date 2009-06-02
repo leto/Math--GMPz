@@ -9,7 +9,7 @@ warn "# Using gmp library version ", Math::GMPz::gmp_v(), "\n";
 warn "# CC is ", Math::GMPz::__GMP_CC, "\n";
 warn "# CFLAGS are ", Math::GMPz::__GMP_CFLAGS, "\n";
 
-if($Math::GMPz::VERSION eq '0.27') {print "ok 1\n"}
+if(defined $Math::GMPz::VERSION ) {print "ok 1\n"}
 else {print "not ok 1 $Math::GMPz::VERSION\n"}
 
 my @version = split /\./, Math::GMPz::gmp_v();

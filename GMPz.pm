@@ -96,7 +96,7 @@ Rmpz_ui_sub Rmpz_urandomb Rmpz_urandomm Rmpz_xor
 rand_init rand_clear
 TRmpz_out_str TRmpz_inp_str
     );
-    $Math::GMPz::VERSION = '0.27';
+    $Math::GMPz::VERSION = '0.27_01';
 
     DynaLoader::bootstrap Math::GMPz $Math::GMPz::VERSION;
 
