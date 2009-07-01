@@ -1,5 +1,4 @@
 MANIFEST
-MANIFEST.SKIP
 CHANGES
 Makefile.PL
 GMPz.pm
@@ -25,7 +24,6 @@ t/longdouble.t
 t/out_str.t
 t/overload.t
 t/printf.t
-t/random.t
 t/use64bitint.t
 t/new.t
 t/not_zero.t

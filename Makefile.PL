@@ -21,7 +21,7 @@ if($use_64_bit_int == -1) {}
 elsif($use_64_bit_int == 1) {$defines .= " -DUSE_64_BIT_INT"}
 else {
   unless($Config::Config{ivsize} < 8) {
-  $defines .= " -DUSE_64_BIT_INT";
+    $defines .= " -DUSE_64_BIT_INT";
   }
 }
 
@@ -29,7 +29,7 @@ if($use_long_double == -1) {}
 elsif($use_long_double == 1) {$defines .= " -DUSE_LONG_DOUBLE"}
 else {
   if($Config::Config{nvsize} > 8 ) {
-  $defines .= " -DUSE_LONG_DOUBLE";
+    $defines .= " -DUSE_LONG_DOUBLE";
   }
 }
 
@@ -45,6 +45,8 @@ print "If this is wrong, see the \"64-bit support\" section in the README\n\n";
 
 my %options = (       
   NAME => 'Math::GMPz',
+  AUTHOR => 'Sisyphus (sisyphus at (@) cpan dot (.) org)',
+  ABSTRACT => 'Perl interface to the GMP integer functions',
   DEFINE   => $defines,
   LIBS => [
     '-lgmp'

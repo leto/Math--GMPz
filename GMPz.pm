@@ -96,7 +96,7 @@ Rmpz_ui_sub Rmpz_urandomb Rmpz_urandomm Rmpz_xor
 rand_init rand_clear
 TRmpz_out_str TRmpz_inp_str
     );
-    $Math::GMPz::VERSION = '0.27_01';
+    $Math::GMPz::VERSION = '0.28';
 
     DynaLoader::bootstrap Math::GMPz $Math::GMPz::VERSION;
 
@@ -1320,8 +1320,13 @@ __END__
 
    $GMP_cc = Math::GMPz::__GMP_CC;
    $GMP_cflags = Math::GMPz::__GMP_CFLAGS;
-    Returns respectively the CC and CFLAGS settings that were used
-    to compile the gmp library. (Not exportable.)
+    These functions are not exportable.
+    If Math::GMPz has been built against gmp-4.2.3 or later,
+    returns respectively the CC and CFLAGS settings that were used
+    to compile the gmp library.
+    Returns undef if Math::GMPz has been built against an earlier
+    version of the gmp library.
+    
 
    $major = Math::GMPz::__GNU_MP_VERSION;
    $minor = Math::GMPz::__GNU_MP_VERSION_MINOR;

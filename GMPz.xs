@@ -359,16 +359,15 @@ SV * Rmpz_get_d(mpz_t * n) {
 void Rmpz_get_d_2exp(mpz_t * n) {
      dXSARGS;
      double d;
-     long exp, *expptr;
+     long exp;
 
-     expptr = &exp;
-     d = mpz_get_d_2exp(expptr, *n);
+     d = mpz_get_d_2exp(&exp, *n);
  
-     // sp = mark; // not needed
+     /* sp = mark; */ /* not needed */
      EXTEND(SP, 2);
      ST(0) = sv_2mortal(newSVnv(d));
      ST(1) = sv_2mortal(newSVuv(exp));
-     // PUTBACK; // not needed
+     /* PUTBACK; */ /* not needed */
      XSRETURN(2);
 }
 
@@ -1722,7 +1721,7 @@ void Rflipbit(mpz_t * flipped, mpz_t * orig) {
         }
      }
 
-// Next 2 functions became available with GMP-4.2
+/* Next 2 functions became available with GMP-4.2 */
 
 void Rmpz_rootrem(mpz_t * root, mpz_t * rem, mpz_t * u, SV * d) { 
      mpz_rootrem(*root, *rem, *u, (unsigned long)SvUV(d));
@@ -3902,13 +3901,21 @@ SV * ___GNU_MP_VERSION_PATCHLEVEL() {
 }
 
 SV * ___GMP_CC() {
+#ifdef __GMP_CC
      char * ret = __GMP_CC;
      return newSVpv(ret, 0);
+#else
+     return &PL_sv_undef;
+#endif
 }
 
 SV * ___GMP_CFLAGS() {
+#ifdef __GMP_CFLAGS
      char * ret = __GMP_CFLAGS;
      return newSVpv(ret, 0);
+#else
+     return &PL_sv_undef;
+#endif
 }
 
 MODULE = Math::GMPz	PACKAGE = Math::GMPz	

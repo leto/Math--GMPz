@@ -1,4 +1,21 @@
+0.28
+ Requires gmp-4.2.0 or later.
+ In response to bug http://rt.cpan.org/Ticket/Display.html?id=46499:
+ - Amendment to Makefile.PL wrt 'long long' and 'long double' support.
+ - Remove reliance on $Config{use64bitint} in t/new.t and t/out_str.t
+ - Add some MAC OS X notes to README and fix some typos.
+ 
+ In response to bug http://rt.cpan.org/Ticket/Display.html?id=46603
+ - In Rmpz_get_d_2exp, change data type of 'exp' from unsigned to signed.
+
+ In response to bug http://rt.cpan.org/Ticket/Display.html?id=46604
+ - Fix ___GMP__CC() and ___GMP_CFLAGS() so that they return undef
+   if __GMP_CC and __GMP_CFLAGS are not defined by the gmp library.
+
+ Thanks, Bob Kuo and Jonathan Leto.
+
 0.27
+ - Requires gmp-4.2.3 or later
  - Remove (the need for) INLINE.h
  - Change Rmpz_sprintf to return the number of characters written.
  - Change Rmpz_sizeinbase and Rmpz_size to return unsigned longs instead

@@ -1,5 +1,5 @@
 This module wraps all of the 'mpz' (integer) functions that
-version 4.2 of the Gnu MP (GMP) library provides.
+the Gnu MP (GMP) library provides. Requires gmp-4.2.0 or later.
 
 You therefore need the GMP library installed on your computer. See:
 http://gmplib.org/
@@ -72,5 +72,5 @@ need to additionally link to MinGW's libgcc.a and libcoldname.a. First,
 create copies of the 3 '.a' files (named libgmp.lib, libgcc.lib, and
 libcoldname.lib) and then run:
 
-perl Makefile.Pl INC="-IC:/path/to/gmp_include" LIBS="-LC:/path/to/gcc_lib -lgcc -LC:/path/to/coldname_lib -lcoldname -LC:/path/to/gmp_lib -lgmp"
+perl Makefile.PL INC="-IC:/path/to/gmp_include" LIBS="-LC:/path/to/gcc_lib -lgcc -LC:/path/to/coldname_lib -lcoldname -LC:/path/to/gmp_lib -lgmp"
 
